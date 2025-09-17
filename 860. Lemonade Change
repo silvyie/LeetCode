@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+bool lemonadeChange(int *notas, int TamanhoNotas);
+
+int main() {
+    int notas[] = {5, 5, 5, 10, 20};
+    int tamanho = sizeof(notas) / sizeof(notas[0]);
+
+    bool resultado = lemonadeChange(notas, tamanho);
+
+    if (resultado) {
+        printf("Pode dar troco\n");
+    } else {
+        printf("Nao pode dar troco\n");
+    }
+
+    return 0;
+}
+
+bool lemonadeChange(int *notas, int TamanhoNotas) {
+    int cinco = 0;
+    int dez = 0;
+
+    for(int i = 0; i < TamanhoNotas; i++){
+        if(notas[i] == 5){
+            cinco = cinco + 1;
+        }else if(notas[i] == 10){
+            if(cinco >= 1){
+                cinco = cinco - 1;
+                dez = dez + 1;
+            }else{
+                return false;
+            }
+        }else if(notas[i] == 20){
+            if(cinco >= 1 && dez >= 1){
+                cinco = cinco - 1;
+                dez = dez - 1;
+            }else if(cinco >= 3){
+                cinco = cinco - 3;
+            }else{
+                return false;
+            }
+        }
+    }
+    return true;
+}
