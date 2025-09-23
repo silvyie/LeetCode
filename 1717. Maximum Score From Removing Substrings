@@ -1,0 +1,53 @@
+int maximumGain(char* s, int x, int y) {
+    char *sub_maior_valor;
+    char *sub_menor_valor;
+
+    int pontos_maior_valor;
+    int pontos_menor_valor;
+
+    if(x > y){
+        sub_maior_valor = "ab";
+        pontos_maior_valor = x;
+        sub_menor_valor = "ba";
+        pontos_menor_valor = y;
+    }else{
+        sub_maior_valor = "ba";
+        pontos_maior_valor = y;
+        sub_menor_valor = "ab";
+        pontos_menor_valor = x;
+    }
+
+    int total_de_pontos = 0;
+    char novo_vetor[100000];
+    int novo_vetor_elementos = 0;
+    int i;
+
+    i = 0;
+    while(i < strlen(s)){
+        novo_vetor[novo_vetor_elementos] = s[i];
+        novo_vetor_elementos++;
+        i++;
+        
+        if(novo_vetor_elementos >= 2 && novo_vetor[novo_vetor_elementos - 2] == sub_maior_valor[0] && novo_vetor[novo_vetor_elementos - 1] == sub_maior_valor[1]){
+        novo_vetor_elementos = novo_vetor_elementos - 2;
+        total_de_pontos = total_de_pontos + pontos_maior_valor;
+        }
+    }
+
+        char novo_vetor_segundo[100000];
+        int novo_vetor_segundo_elementos = 0;
+
+        i = 0;
+        while(i < novo_vetor_elementos){
+            novo_vetor_segundo[novo_vetor_segundo_elementos] = novo_vetor[i];
+            novo_vetor_segundo_elementos++;
+            i++;
+            
+            if(novo_vetor_segundo_elementos >= 2 && novo_vetor_segundo[novo_vetor_segundo_elementos - 2] == sub_menor_valor[0] && novo_vetor_segundo[novo_vetor_segundo_elementos - 1] == sub_menor_valor[1]){
+                novo_vetor_segundo_elementos = novo_vetor_segundo_elementos - 2;
+                total_de_pontos = total_de_pontos + pontos_menor_valor;
+                }
+        }
+
+        return total_de_pontos;
+}
