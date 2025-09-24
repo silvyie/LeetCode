@@ -1,0 +1,37 @@
+char *longestDiverseString(int a, int b, int c) {
+    char *novo_vetor = (char*)malloc(sizeof(char) * (a + b + c + 1));
+    int novo_vetor_elementos = 0;
+
+    while(1){
+        
+        if(a > 0 && (a >= b && a >= c) && (novo_vetor_elementos < 2 || !(novo_vetor[novo_vetor_elementos - 2] == 'a' && novo_vetor[novo_vetor_elementos - 1] == 'a'))){
+            novo_vetor[novo_vetor_elementos] = 'a';
+            novo_vetor_elementos++;
+            a--;
+        }else if(b > 0 && (b >= c) && (novo_vetor_elementos < 2 || !(novo_vetor[novo_vetor_elementos - 2] == 'b' && novo_vetor[novo_vetor_elementos - 1] == 'b'))){
+           novo_vetor[novo_vetor_elementos] = 'b';
+           novo_vetor_elementos++;
+           b--;
+        }else if(c > 0 && (novo_vetor_elementos < 2 || !(novo_vetor[novo_vetor_elementos - 2] == 'c' && novo_vetor[novo_vetor_elementos - 1] == 'c'))){
+            novo_vetor[novo_vetor_elementos] = 'c';
+            novo_vetor_elementos++;
+            c--;
+            }else{
+                if(a > 0 && !(novo_vetor_elementos >= 2 && novo_vetor[novo_vetor_elementos - 2] == 'a' && novo_vetor[novo_vetor_elementos - 1] == 'a')) {
+                    novo_vetor[novo_vetor_elementos++] = 'a';
+                    a--;
+                    }else if (b > 0 && !(novo_vetor_elementos >= 2 && novo_vetor[novo_vetor_elementos - 2] == 'b' && novo_vetor[novo_vetor_elementos - 1] == 'b')) {
+                        novo_vetor[novo_vetor_elementos++] = 'b';
+                        b--;
+                        }else if (c > 0 && !(novo_vetor_elementos >= 2 && novo_vetor[novo_vetor_elementos - 2] == 'c' && novo_vetor[novo_vetor_elementos - 1] == 'c')) {
+                            novo_vetor[novo_vetor_elementos++] = 'c';
+                            c--;
+                            }else{
+                                break;
+                            }
+            }
+    }
+
+    novo_vetor[novo_vetor_elementos] = '\0';
+    return novo_vetor;
+}
