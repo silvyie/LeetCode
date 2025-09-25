@@ -1,0 +1,64 @@
+typedef struct turma{
+    int passaramAlunos;
+    int totalAlunos;
+    double ganhoAlunoBrilhante;
+} Turma;
+
+void maxHeapify(Turma *turma_prioridade, int tamanhoTurma, int i) {
+    int maior = i;
+    int filhoEsquerdo = 2 * i + 1;
+    int filhoDireito = 2 * i + 2;
+
+    if (filhoEsquerdo < tamanhoTurma && turma_prioridade[filhoEsquerdo].ganhoAlunoBrilhante > turma_prioridade[maior].ganhoAlunoBrilhante) {
+        maior = filhoEsquerdo;
+    }
+
+    if (filhoDireito < tamanhoTurma && turma_prioridade[filhoDireito].ganhoAlunoBrilhante > turma_prioridade[maior].ganhoAlunoBrilhante) {
+        maior = filhoDireito;
+    }
+
+    if (maior != i) {
+        Turma trocaMaior = turma_prioridade[i];
+        turma_prioridade[i] = turma_prioridade[maior];
+        turma_prioridade[maior] = trocaMaior;
+
+        maxHeapify(turma_prioridade, tamanhoTurma, maior);
+    }
+}
+
+double maxAverageRatio(int** turmas, int tamanhoTurma, int* tamanhoTurmaColunas, int alunoBrilhante) {
+    Turma* turma_prioridade = malloc(sizeof(Turma) * tamanhoTurma);
+
+    for (int i = 0; i < tamanhoTurma; i++) {
+        int numAprovados = turmas[i][0];
+        int totalAlunos = turmas[i][1];
+
+        double ganho = ((double)(numAprovados + 1) / (totalAlunos + 1)) - ((double)numAprovados / totalAlunos);
+
+        turma_prioridade[i].passaramAlunos = numAprovados;
+        turma_prioridade[i].totalAlunos = totalAlunos;
+        turma_prioridade[i].ganhoAlunoBrilhante = ganho;
+    }
+
+    for (int i = (tamanhoTurma / 2) - 1; i >= 0; i--) {
+        maxHeapify(turma_prioridade, tamanhoTurma, i);
+    }
+
+    while (alunoBrilhante-- > 0) {
+        turma_prioridade[0].passaramAlunos++;
+        turma_prioridade[0].totalAlunos++;
+
+        turma_prioridade[0].ganhoAlunoBrilhante = ((double)(turma_prioridade[0].passaramAlunos + 1) / (turma_prioridade[0].totalAlunos + 1)) - ((double)turma_prioridade[0].passaramAlunos / turma_prioridade[0].totalAlunos);
+
+        maxHeapify(turma_prioridade, tamanhoTurma, 0);
+    }
+
+    double soma = 0.0;
+    for (int i = 0; i < tamanhoTurma; i++) {
+        soma += (double)turma_prioridade[i].passaramAlunos / turma_prioridade[i].totalAlunos;
+    }
+    
+    free(turma_prioridade);
+
+    return soma / tamanhoTurma;
+}
