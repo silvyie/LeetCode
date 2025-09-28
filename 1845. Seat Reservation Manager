@@ -1,0 +1,88 @@
+typedef struct {
+    int *assentosDisponiveis; // ponteiro que vai ser o vetor (MinHeap)
+    int capacidade;           // o n inicial
+    int tamanhoAtual;         // numero de assentos que já estão no vetor
+} SeatManager;
+
+SeatManager* seatManagerCreate(int n) {
+    SeatManager* obj = malloc(sizeof(SeatManager));
+    obj->assentosDisponiveis = malloc(n * sizeof(int));
+
+    for(int i = 0; i < n; i++){
+        obj->assentosDisponiveis[i] = i + 1; // inicializa de 1 a n
+    }
+
+    obj->capacidade = n;
+    obj->tamanhoAtual = n; // começa cheio, todos os assentos disponíveis
+    
+    return obj;
+}
+
+// função reserve() com heapify down
+int seatManagerReserve(SeatManager* obj) {
+    int assentoReservado = obj->assentosDisponiveis[0];
+    obj->assentosDisponiveis[0] = obj->assentosDisponiveis[obj->tamanhoAtual - 1];
+    obj->tamanhoAtual--;
+
+    int i = 0;
+    while (1) {
+        int menor = i;
+        int filho_esquerda = 2 * i + 1;
+        int filho_direita = 2 * i + 2;
+
+        if (filho_esquerda < obj->tamanhoAtual &&
+            obj->assentosDisponiveis[filho_esquerda] < obj->assentosDisponiveis[menor]) {
+            menor = filho_esquerda;
+        }
+
+        if (filho_direita < obj->tamanhoAtual &&
+            obj->assentosDisponiveis[filho_direita] < obj->assentosDisponiveis[menor]) {
+            menor = filho_direita;
+        }
+
+        if (menor != i) {
+            int temporaria = obj->assentosDisponiveis[i];
+            obj->assentosDisponiveis[i] = obj->assentosDisponiveis[menor];
+            obj->assentosDisponiveis[menor] = temporaria;
+            i = menor;
+        } else {
+            break;
+        }
+    }
+
+    return assentoReservado;
+}
+
+// função unreserve() com heapify up
+void seatManagerUnreserve(SeatManager* obj, int liberaAssento) {
+    obj->assentosDisponiveis[obj->tamanhoAtual] = liberaAssento;
+    int i = obj->tamanhoAtual;
+    obj->tamanhoAtual++;
+
+    // heapify up
+    while (i > 0) {
+        int pai = (i - 1) / 2;
+        if (obj->assentosDisponiveis[i] < obj->assentosDisponiveis[pai]) {
+            int temporario = obj->assentosDisponiveis[i];
+            obj->assentosDisponiveis[i] = obj->assentosDisponiveis[pai];
+            obj->assentosDisponiveis[pai] = temporario;
+            i = pai;
+        } else {
+            break;
+        }
+    }
+}
+
+// Libera memória
+void seatManagerFree(SeatManager* obj) {
+    free(obj->assentosDisponiveis);
+    free(obj);
+}
+
+/**
+ * Your SeatManager struct will be instantiated and called as such:
+ * SeatManager* obj = seatManagerCreate(n);
+ * int param_1 = seatManagerReserve(obj);
+ * seatManagerUnreserve(obj, seatNumber);
+ * seatManagerFree(obj);
+*/
