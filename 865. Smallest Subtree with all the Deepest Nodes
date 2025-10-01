@@ -1,0 +1,48 @@
+/**
+ * Não redefinir TreeNode, o LeetCode já fornece:
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+typedef struct {
+    int profundidade;
+    struct TreeNode* no; // ponteiro para o nó da subárvore mais profunda
+} Pair;
+
+// protótipo da função auxiliar
+Pair auxiliar(struct TreeNode* no);
+
+struct TreeNode* subtreeWithAllDeepest(struct TreeNode* root) {
+    if (root == NULL) {
+        return NULL;
+    }
+    Pair resultado = auxiliar(root);
+    return resultado.no;
+}
+
+// função auxiliar recursiva
+Pair auxiliar(struct TreeNode* no) {
+    if (no == NULL) {
+        Pair vazio = {0, NULL};
+        return vazio;
+    }
+
+    // chamada recursiva para os filhos esquerdo e direito
+    Pair esq = auxiliar(no->left);
+    Pair dir = auxiliar(no->right);
+
+    // compara profundidade das subárvores
+    if (esq.profundidade > dir.profundidade) {
+        Pair resultado = {esq.profundidade + 1, esq.no};
+        return resultado;
+    } else if (dir.profundidade > esq.profundidade) {
+        Pair resultado = {dir.profundidade + 1, dir.no};
+        return resultado;
+    } else {
+        Pair resultado = {esq.profundidade + 1, no};
+        return resultado;
+    }
+}
