@@ -1,0 +1,75 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+#define MAX 10000
+ 
+int somaSubarvore(struct TreeNode* no, int somas[], int frequencias[], int* numSomas) {
+    if (no == NULL) return 0;
+    
+    int somaEsq = somaSubarvore(no->left, somas, frequencias, numSomas);
+    int somaDir = somaSubarvore(no->right, somas, frequencias, numSomas);
+
+    int somaAtual = no->val + somaEsq + somaDir;
+    
+    int achou = 0;
+    for (int i = 0; i < *numSomas; i++) {
+        if (somas[i] == somaAtual) {
+            frequencias[i]++; 
+            achou = 1;
+            break;
+        }
+    }
+    
+    if (!achou) {
+        somas[*numSomas] = somaAtual;
+        frequencias[*numSomas] = 1;
+        (*numSomas)++;
+    }
+    
+    return somaAtual;
+}
+
+int *findFrequentTreeSum(struct TreeNode *root, int *returnSize){
+    int *somas = malloc(MAX * sizeof(int));
+    int *frequencias = malloc(MAX * sizeof(int));
+    int numSomas = 0;
+
+    somaSubarvore(root, somas, frequencias, &numSomas);
+
+    int tamanhoResultado = 0;
+    int frequenciaMax = 0;
+    for(int i = 0; i < numSomas; i++){
+        if(frequencias[i] > frequenciaMax){
+            frequenciaMax = frequencias[i];
+        }
+    }
+    for(int i = 0; i < numSomas; i++){
+        if(frequencias[i] == frequenciaMax){
+            tamanhoResultado++;
+        }
+    }
+
+    int *resultado = malloc(tamanhoResultado * sizeof(int));
+    *returnSize = tamanhoResultado; 
+
+    int j = 0;
+    for (int i = 0; i < numSomas; i++) {
+        if(frequencias[i] == frequenciaMax){
+            resultado[j] = somas[i]; 
+            j++;
+        }
+    }
+
+    free(somas);
+    free(frequencias);
+
+    return resultado;
+}
